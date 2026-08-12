@@ -318,7 +318,7 @@ fun CalendarGrid(
                                     }
                                     Text(
                                         text = badgeText,
-                                        fontSize = 9.sp,
+                                        fontSize = 11.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = if (info.restType == RestType.WORKDAY) Color(0xFF666666) else Color(0xFFE74C3C),
                                         modifier = Modifier
@@ -334,7 +334,7 @@ fun CalendarGrid(
                                 ) {
                                     Text(
                                         text = String.format("%02d", dayNumber),
-                                        fontSize = 16.sp,
+                                        fontSize = 19.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = if (info.restType == RestType.HOLIDAY || info.restType == RestType.WEEKEND) Color(0xFFE74C3C) else Color(0xFF333333)
                                     )
@@ -346,7 +346,7 @@ fun CalendarGrid(
                                     }
                                     Text(
                                         text = bottomText,
-                                        fontSize = 10.sp,
+                                        fontSize = 13.sp,
                                         color = when {
                                             info.lunar.festival != null -> Color(0xFFE74C3C)
                                             info.lunar.solarTerm != null -> Color(0xFF27AE60)
