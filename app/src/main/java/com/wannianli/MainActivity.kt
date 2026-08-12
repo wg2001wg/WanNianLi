@@ -24,6 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wannianli.LunarCalendar.DayInfo
+import com.wannianli.LunarCalendar.RestType
 import com.wannianli.ui.theme.WanNianLiTheme
 import java.util.Calendar
 import java.util.GregorianCalendar
@@ -288,6 +289,8 @@ fun CalendarGrid(
                                 when {
                                     isSelected -> Color(0xFFFFF3E0)
                                     isToday -> Color(0xFFE3F2FD)
+                                    info?.restType == RestType.HOLIDAY || info?.restType == RestType.WEEKEND -> Color(0xFFFFF0F0)
+                                    info?.restType == RestType.WORKDAY -> Color(0xFFF5F5F5)
                                     else -> Color.White
                                 }
                             )
@@ -302,30 +305,56 @@ fun CalendarGrid(
                         contentAlignment = Alignment.Center
                     ) {
                         if (isValid && info != null) {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
+                            Box(
+                                modifier = Modifier.fillMaxSize()
                             ) {
-                                Text(
-                                    text = String.format("%02d", dayNumber),
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = when {
-                                        isSunday || isSaturday -> Color(0xFFE74C3C)
-                                        else -> Color(0xFF333333)
+                                // 左上角休/末/班角标
+                                if (info.restType != RestType.NORMAL) {
+                                    val badgeText = when (info.restType) {
+                                        RestType.HOLIDAY -> "休"
+                                        RestType.WEEKEND -> "末"
+                                        RestType.WORKDAY -> "班"
+                                        else -> ""
                                     }
-                                )
-                                val bottomText = info.lunar.festival ?: info.lunar.solarTerm ?: info.lunar.lunarDayName
-                                Text(
-                                    text = bottomText,
-                                    fontSize = 10.sp,
-                                    color = when {
-                                        info.lunar.festival != null -> Color(0xFFE74C3C)
-                                        info.lunar.solarTerm != null -> Color(0xFF27AE60)
-                                        else -> Color(0xFF666666)
-                                    },
-                                    maxLines = 1
-                                )
+                                    Text(
+                                        text = badgeText,
+                                        fontSize = 9.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = if (info.restType == RestType.WORKDAY) Color(0xFF666666) else Color(0xFFE74C3C),
+                                        modifier = Modifier
+                                            .align(Alignment.TopStart)
+                                            .padding(start = 3.dp, top = 2.dp)
+                                    )
+                                }
+
+                                Column(
+                                    modifier = Modifier.align(Alignment.Center),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = String.format("%02d", dayNumber),
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = if (info.restType == RestType.HOLIDAY || info.restType == RestType.WEEKEND) Color(0xFFE74C3C) else Color(0xFF333333)
+                                    )
+                                    val bottomText = when {
+                                        info.lunar.festival != null -> info.lunar.festival
+                                        info.lunar.solarTerm != null -> info.lunar.solarTerm
+                                        info.lunar.lunarDay == 1 -> info.lunar.lunarMonthName
+                                        else -> info.lunar.lunarDayName
+                                    }
+                                    Text(
+                                        text = bottomText,
+                                        fontSize = 10.sp,
+                                        color = when {
+                                            info.lunar.festival != null -> Color(0xFFE74C3C)
+                                            info.lunar.solarTerm != null -> Color(0xFF27AE60)
+                                            else -> Color(0xFF666666)
+                                        },
+                                        maxLines = 1
+                                    )
+                                }
                             }
                         }
                     }

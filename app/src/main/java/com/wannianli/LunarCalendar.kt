@@ -171,6 +171,8 @@ object LunarCalendar {
         val solarTerm: String?
     )
 
+    enum class RestType { HOLIDAY, WEEKEND, WORKDAY, NORMAL }
+
     data class DayInfo(
         val solarYear: Int,
         val solarMonth: Int,
@@ -195,14 +197,18 @@ object LunarCalendar {
         val chong: String,
         val sha: String,
         val liuYao: String,
-        val shiErShen: String
+        val shiErShen: String,
+        val restType: RestType
     )
 
     fun getDayInfo(year: Int, month: Int, day: Int): DayInfo {
         val cal = GregorianCalendar(year, month - 1, day)
         val weekDays = arrayOf("星期日","星期一","星期二","星期三","星期四","星期五","星期六")
         val weekDay = weekDays[cal.get(Calendar.DAY_OF_WEEK) - 1]
+        val isSaturday = cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY
+        val isSunday = cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
         val lunar = solarToLunar(year, month, day)
+        val restType = getRestType(year, month, day, isSaturday, isSunday)
         val solarTerm = getSolarTerm(year, month, day)
         val nextSolarTerm = getNextSolarTerm(year, month, day)
         val (yi, ji) = getYiJi(lunar)
@@ -234,9 +240,77 @@ object LunarCalendar {
             chong = "${zodiacAnimals[(earthlyBranches.indexOf(dayZhi) + 6) % 12]}（${getChongGanZhi(dayGan, dayZhi)}）",
             sha = shaMap[dayZhi] ?: "",
             liuYao = getLiuYao(year, month, day),
-            shiErShen = getShiErShen(lunar.lunarYear, lunar.lunarMonth, dayZhi)
+            shiErShen = getShiErShen(lunar.lunarYear, lunar.lunarMonth, dayZhi),
+            restType = restType
         )
     }
+
+    /**
+     * 判断当天休息日类型：法定假日/周末休息/调休上班/普通工作日
+     */
+    fun getRestType(solarYear: Int, solarMonth: Int, solarDay: Int, isSaturday: Boolean, isSunday: Boolean): RestType {
+        if (legalHolidays[solarYear]?.contains(Pair(solarMonth, solarDay)) == true) return RestType.HOLIDAY
+        if (isSaturday || isSunday) {
+            return if (adjustedWorkdays[solarYear]?.contains(Pair(solarMonth, solarDay)) == true) RestType.WORKDAY else RestType.WEEKEND
+        }
+        return RestType.NORMAL
+    }
+
+    // 法定假日日期集合（公历，已包含调休连休的周末）
+    private val legalHolidays = mapOf(
+        2025 to setOf(
+            Pair(1,1),
+            Pair(1,28), Pair(1,29), Pair(1,30), Pair(1,31),
+            Pair(2,1), Pair(2,2), Pair(2,3),
+            Pair(4,4), Pair(4,5), Pair(4,6),
+            Pair(5,1), Pair(5,2), Pair(5,3), Pair(5,4), Pair(5,5),
+            Pair(5,31), Pair(6,1), Pair(6,2),
+            Pair(10,1), Pair(10,2), Pair(10,3), Pair(10,4), Pair(10,5), Pair(10,6), Pair(10,7), Pair(10,8)
+        ),
+        2026 to setOf(
+            Pair(1,1), Pair(1,2), Pair(1,3),
+            Pair(2,17), Pair(2,18), Pair(2,19), Pair(2,20), Pair(2,21), Pair(2,22), Pair(2,23),
+            Pair(4,4), Pair(4,5), Pair(4,6),
+            Pair(5,1), Pair(5,2), Pair(5,3), Pair(5,4), Pair(5,5),
+            Pair(6,19), Pair(6,20), Pair(6,21),
+            Pair(9,25), Pair(9,26), Pair(9,27),
+            Pair(10,1), Pair(10,2), Pair(10,3), Pair(10,4), Pair(10,5), Pair(10,6), Pair(10,7)
+        ),
+        2027 to setOf(
+            Pair(1,1), Pair(1,2), Pair(1,3),
+            Pair(2,6), Pair(2,7), Pair(2,8), Pair(2,9), Pair(2,10), Pair(2,11), Pair(2,12),
+            Pair(4,3), Pair(4,4), Pair(4,5),
+            Pair(5,1), Pair(5,2), Pair(5,3), Pair(5,4), Pair(5,5),
+            Pair(6,9), Pair(6,10), Pair(6,11),
+            Pair(9,15), Pair(9,16), Pair(9,17),
+            Pair(10,1), Pair(10,2), Pair(10,3), Pair(10,4), Pair(10,5), Pair(10,6), Pair(10,7)
+        )
+    )
+
+    // 调休上班日期（周末被调整为工作日）
+    private val adjustedWorkdays = mapOf(
+        2025 to setOf(
+            Pair(1,26), Pair(2,8),
+            Pair(4,27),
+            Pair(9,28), Pair(10,11)
+        ),
+        2026 to setOf(
+            Pair(2,14), Pair(2,24),
+            Pair(4,11),
+            Pair(4,26), Pair(5,9),
+            Pair(6,27),
+            Pair(9,20),
+            Pair(10,10)
+        ),
+        2027 to setOf(
+            Pair(2,20),
+            Pair(4,10),
+            Pair(4,25), Pair(5,8),
+            Pair(6,12),
+            Pair(9,19),
+            Pair(9,26), Pair(10,9)
+        )
+    )
 
     private fun getChongGanZhi(gan: String, zhi: String): String {
         val ganIdx = heavenlyStems.indexOf(gan)
