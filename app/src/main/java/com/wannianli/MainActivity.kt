@@ -272,6 +272,7 @@ fun CalendarGrid(
                     val isValid = dayNumber in 1..daysInMonth
                     val isSelected = isValid && year == selectedYear && month == selectedMonth && dayNumber == selectedDay
                     val isSunday = col == 6
+                    val isSaturday = col == 5
                     val info = if (isValid) {
                         LunarCalendar.getDayInfo(year, month, dayNumber)
                     } else null
@@ -310,8 +311,7 @@ fun CalendarGrid(
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = when {
-                                        info.lunar.festival != null -> Color(0xFFE74C3C)
-                                        isSunday -> Color(0xFFE74C3C)
+                                        isSunday || isSaturday -> Color(0xFFE74C3C)
                                         else -> Color(0xFF333333)
                                     }
                                 )
