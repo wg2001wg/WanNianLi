@@ -59,22 +59,7 @@ fun CalendarApp() {
         LunarCalendar.getDayInfo(selectedYear, selectedMonth, selectedDay)
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        "万年日历查询 - 在线日历",
-                        fontSize = 18.sp,
-                        color = Color(0xFF333333)
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFE8F5E9)
-                )
-            )
-        }
-    ) { padding ->
+    Scaffold { padding ->
         Column(
             modifier = Modifier
                 .padding(padding)
