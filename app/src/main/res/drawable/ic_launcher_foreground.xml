@@ -4,10 +4,26 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    <!-- 日历白卡 -->
     <path
-        android:fillColor="#D35400"
-        android:pathData="M54,30 L54,38 M54,70 L54,78 M30,54 L38,54 M70,54 L78,54 M54,42
-            A12,12 0 1,1 54,66 A12,12 0 1,1 54,42"
-        android:strokeWidth="4"
-        android:strokeColor="#D35400" />
+        android:fillColor="#FFFFFF"
+        android:pathData="M22,30 h64 a8,8 0 0 1 8,8 v46 a8,8 0 0 1 -8,8 h-64 a8,8 0 0 1 -8,-8 v-46 a8,8 0 0 1 8,-8 z" />
+    <!-- 顶部红色书脊 -->
+    <path
+        android:fillColor="#E74C3C"
+        android:pathData="M22,30 h64 a8,8 0 0 1 8,8 v4 h-80 v-4 a8,8 0 0 1 8,-8 z" />
+    <!-- 书脊两个白孔 -->
+    <path android:fillColor="#FFFFFF" android:pathData="M41,35 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0" />
+    <path android:fillColor="#FFFFFF" android:pathData="M67,35 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0" />
+    <!-- 上方一行日期格点 -->
+    <path android:fillColor="#CBD2DB" android:pathData="M36,50 m-2.5,0 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
+    <path android:fillColor="#CBD2DB" android:pathData="M54,50 m-2.5,0 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
+    <path android:fillColor="#CBD2DB" android:pathData="M72,50 m-2.5,0 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
+    <!-- 今日红色圆标记 -->
+    <path android:fillColor="#E74C3C" android:pathData="M54,66 m-13,0 a13,13 0 1,0 26,0 a13,13 0 1,0 -26,0" />
+    <!-- 高光 -->
+    <path android:fillColor="#FF8A7A" android:pathData="M49,60 a7,7 0 0 1 9,-4 a8,8 0 0 0 -9,4 z" />
+    <!-- 下方一行日期格点（避开中心圆） -->
+    <path android:fillColor="#CBD2DB" android:pathData="M36,82 m-2.5,0 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
+    <path android:fillColor="#CBD2DB" android:pathData="M72,82 m-2.5,0 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
 </vector>
